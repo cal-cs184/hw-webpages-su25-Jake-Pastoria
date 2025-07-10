@@ -32,15 +32,15 @@
 
 		<br>
 
-		Link to main webpage: (TODO) <a href="https://cal-cs184.github.io/hw-webpages-su25-Jake-Pastoria/">https://cal-cs184.github.io/hw-webpages-su25-Jake-Pastoria/</a>
+		Link to main webpage: <a href="https://cal-cs184.github.io/hw-webpages-su25-Jake-Pastoria/">https://cal-cs184.github.io/hw-webpages-su25-Jake-Pastoria/</a>
 		
 		<br>
 
-		Link to GitHub repository: (TODO) <a href="https://github.com/cal-cs184/hw-rasterizer-jake-archisha">https://github.com/cal-cs184/hw-rasterizer-jake-archisha</a>
+		Link to GitHub repository: <a href="https://github.com/cal-cs184/hw-rasterizer-jake-archisha">https://github.com/cal-cs184/hw-rasterizer-jake-archisha</a>
 
 		<br>
 
-		Link to website repo: (TODO) <a href="https://github.com/cal-cs184/hw-webpages-su25-Jake-Pastoria">https://github.com/cal-cs184/hw-webpages-su25-Jake-Pastoria</a>
+		Link to website repo: <a href="https://github.com/cal-cs184/hw-webpages-su25-Jake-Pastoria">https://github.com/cal-cs184/hw-webpages-su25-Jake-Pastoria</a>
 
 		<figure>
 			<img src="lion.jpg" alt="Lion" style="width:50%"/>
@@ -53,8 +53,8 @@
 
 		<h2>Overview</h2>
 		In this homework, we implemented a 2d rasterization pipeline with basic triangle rendering using the three-lines test, supersampling, transformations, antialiasing, barycentric color 
-		interpolation, and texture mapping. This assignment begins with the goal of constructing an optimal rasterization algorithms, which provides a strong foundational understanding of how the 
-		point-in-triangle sampling method works. The later tasks solidify the weaknesses of naive rasterization implementations, and demonstrates different ways to antialias and reduce the 
+		interpolation, and texture mapping. The early tasks focused on constructing an optimal rasterization algorithms, which provides a strong foundation for understanding the 
+		point-in-triangle sampling method. The later tasks solidify the weaknesses of naive rasterization implementations, and demonstrates different ways to antialias and reduce the 
 		effects of texture minification and magnification. 
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
@@ -116,10 +116,58 @@
 		</div>
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		In task 2, we implemented a supersampling algorithm in an attempt to antialias. The effects of this supersapling can be seen
+		below, as increased sampling rates reduces jagged or disconnected edges.
+		<br><br>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task2_1pix.png" width="400px"/>
+				  <figcaption>1 Pixel sampling rate</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task2_4pix.png" width="400px"/>
+				  <figcaption>4 Pixel sampling rate</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task2_16pix.png" width="400px"/>
+				  <figcaption>16 Pixel sampling rate</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<br><br>
+
+		The supersampling method we implemented follows the methods described in lecture, which essentially details taking NxN samples per pixel and averaging those values.
+		For each sample, we take NxN samples and add their color values to the <code>sample_buffer</code>. From there, we go through this higher dimension buffer, essentially computing 
+		a convolution to reduce the dimensions back to the correct number of pixels to be filled. This differs from our initial rasterization pipeline greatly, as supersampling adds 
+		an almost continuous aspect due to the numerous samples per pixel. Now instead of checking just one spot per pixel and returning either filled or not filled as we did in the
+		previous task, we now compute the average of multiple samples per pixel to fill the pixel with a color. <br><br>
+		The benefit of this is the reduction in aliasing, as the decision to fill or not fill a pixel with a certain color becomes less discrete than the initial implementation of sampling 
+		once per pixel. For example, with 1 sample per pixel, a triangle that slightly misses the center of the pixel will not be shown at all. This can be seen above 
+		in the "1 sample per pixel" image, which demonstrates how certain edges can look completely disconnected. Meanwhile, supersampling allows this 
+		triangle to be partially represented in this pixel, as long as it passes through a couple of these smaller subsamples. This is seen in the images showing sample rates of 4 and 16. <br><br>
+		
+
+
+
+
+
+
 
 		<h2>Task 3: Transforms</h2>
-		For task 3, we made the robot do the popular dance "Gangnam Style." The robot is wearing a suit, and its arms are crossed over each other, with one of its legs being folded a bit higher than the other. This image is intended to be mid-dance.
+		For task 3, we made the robot do the popular dance "Gangnam Style." The robot is wearing a suit, and its arms are crossed over each other,
+		 with one of its legs being folded a bit higher than the other. This image is intended to be mid-dance.
 
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
