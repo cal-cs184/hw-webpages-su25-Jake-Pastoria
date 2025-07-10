@@ -228,8 +228,40 @@
 		</div>
 
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		In this section, we implement pixel sampling to texture map a full resolution image using both bilinear and nearest-neighbor interpolation. The goal of this section is to
+		correctly map a texture onto the triangles/shapes in the scene, thus projecting that color onto the screen space. Each vertex of each triangle in the scene has a UV coordinate, which
+		corresponds to a certain texel in the texture. When this UV coordinate does not map directly onto a texel, we decide what color this pixel on screen should be through various methods 
+		of point sampling. In this assignment, we utilize two pixel-sampling approaches: bilinear and nearest neighbor.<br><br>
 
+		For nearest neighbor interpolation, we simply take the color value of the texel closest to our UV mapped coordinate. This generally results in a more pixelated look, and has similar
+		pitfalls to the single sample per pixel rasterization that we implemented in the previous section. The results for nearest neighbor sampling can be seen below. <br><br>
+		
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task5_near_1pix.png" width="500px"/>
+				  <figcaption>Nearest neighbor 1px</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task5_near_16px.png" width="500px"/>
+				  <figcaption>Nearest neighbor 16px</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task5_bi_1pix.png" width="500px"/>
+				  <figcaption>Bilinear 1px</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task5_bi_16pix.png" width="500px"/>
+				  <figcaption>Bilinear 16px</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
