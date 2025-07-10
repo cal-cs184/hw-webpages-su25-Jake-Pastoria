@@ -234,7 +234,12 @@
 		of point sampling. In this assignment, we utilize two pixel-sampling approaches: bilinear and nearest neighbor.<br><br>
 
 		For nearest neighbor interpolation, we simply take the color value of the texel closest to our UV mapped coordinate. This generally results in a more pixelated look, and has similar
-		pitfalls to the single sample per pixel rasterization that we implemented in the previous section. The results for nearest neighbor sampling can be seen below. <br><br>
+		pitfalls to the single sample per pixel rasterization that we implemented in the previous section. <br><br>
+		
+		For bilinear sampling, we instead linearly interpolate the 4 closest texels to our UV mapped coordinate. As you can see from the image below, this results in a slightly blurred look,
+		which tends to be more visually appealing and smooth.<br><br>
+
+		The results for nearest neighbor and bilinear sampling can be seen below. <br><br>
 		
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
