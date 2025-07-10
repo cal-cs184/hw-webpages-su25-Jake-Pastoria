@@ -27,20 +27,20 @@
 	</head>
 	<body>
 		<div class="container">
-		<h1>CS184/284A Spring 2025 Homework 1 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+		<h1>CS184/284A Summer 2025 Homework 1 Write-Up</h1>
+		<div style="text-align: center;">Jake Pastoria & Archisha Nangia</div>
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/su25">cs184.eecs.berkeley.edu/sp25</a>
 		
 		<br>
 
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to GitHub repository: (TODO) <a href="https://github.com/cal-cs184/hw-rasterizer-jake-archisha">https://github.com/cal-cs184/hw-rasterizer-jake-archisha</a>
 
 		<figure>
 			<img src="lion.jpg" alt="Lion" style="width:50%"/>
-			<figcaption>You can add images with captions!</figcaption>
+			<figcaption></figcaption>
 		</figure>
 
 		<!--
@@ -48,32 +48,64 @@
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		In this homework, we implemented a 2d rasterization pipeline with basic triangle rendering using the three-lines test, supersampling, transformations, antialiasing, barycentric color 
+		interpolation, and texture mapping. This assignment begins with the goal of constructing an optimal rasterization algorithms, which provides a strong foundational understanding of how the 
+		point-in-triangle sampling method works. The later tasks solidify the weaknesses of naive rasterization implementations, and demonstrates different ways to antialias and reduce the 
+		effects of texture minification and magnification. 
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Our rasterization pipeline followed the "Three Line Tests" as mentioned in lecture, and works for both clockwise and counter-clockwise triangles. We did this by getting the dot product between the normal vector of each edge on the triangle and the 
+		vector to each sample point. For each individual edge, this dot product identifies whether or not this sample point is 'above' or 'inside that edge' relative to the triangle. 
+		This dot product can be 
+		represented as the following formula from lecture for any given sample point and two vertexes of the triangle.
+		  <br>
+		\[ L(x, y) = V · N = -(x - x0)(y1 - y0) + (y - y0)(x1 - x0) \] <br>
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+		If this value is greater than zero for all edges (or equal to zero if it's on the line), then we know this sample point must be inside of our triangle. 
+		Seen in our code here:<br><br>
+
+		<code>
+            float xNew = x + 0.5;<br>
+            float yNew = y + 0.5;<br>
+            <br>
+            if ((-1 * (xNew -x0) * (y1-y0)) + ((yNew -y0) * (x1-x0)) >= 0) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if ((-1 * (xNew - x1) * (y2 - y1)) + ((yNew - y1) * (x2 - x1)) >= 0) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ((-1 * (xNew - x2) * (y0 - y2)) + ((yNew - y2) * (x0 - x2)) >= 0) {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fill_pixel(xNew, yNew, color);<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}   <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+            }<br>
+		</code><br><br>
+		As of right now, our algorithm does this for every sample point in the 'bounding box' of each triangle to select a smaller number of points to test. This means that
+		relative to the question asked in Task 1 regarding our algorithms efficiency, it has exactly the same efficiency as one that checks each sample within the bounding box of the triangle.  <br><br>
+		
+		<strong>Extra Credit:</strong>
+		<br><br>
+		The main optimization that we applied to our initial code was to pull out some of the repeating calculations, which minimizes the number of accesses to memory as well as 
+		the number of operations. You can see that in our previous code, we use the entire equation for L(x,y) at each sample point. By pulling out the repeated code and operations, we
+		were able to get our render time for 'basic/test4.svg' code to decrease by an average of around 13%. 
+		<br><br>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="task1_before.png" width="400px"/>
+				  <figcaption>Before optimization</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="task1_after1.png" width="400px"/>
+				  <figcaption>After optimization</figcaption>
 				</td>
 			  </tr>
+			</table>
+		</div>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="task1.png" width="600px"/>
+				  <figcaption>basic/test4.svg</figcaption>
 				</td>
 			  </tr>
 			</table>
@@ -83,10 +115,65 @@
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 		<h2>Task 3: Transforms</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		For task 3, we made the robot do the popular dance "Gangnam Style." The robot is wearing a suit, and its arms are crossed over each other, with one of its legs being folded a bit higher than the other. This image is intended to be mid-dance.
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task3_orig.png" width="600px"/>
+				  <figcaption>Original Robot</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task3_new.png" width="600px"/>
+				  <figcaption>New Robot (Gangnam Style)</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
 
 		<h2>Task 4: Barycentric coordinates</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Barycentric coordinates are used as a method for linear interpolation, which can be applied in various ways. In our project, we use them for representing
+		a linear interpolation of color across each triangle. <br><br> 
+		
+		The general idea of barycentric coordinates is that if each vertex (A, B, C) of a given triangle represents
+		some value (in our case this value is a color, as seen in Figure 1 below), then we can represent the value of any coordinate (x,y) as a linear combination of \(α\), \(β\), and \(γ\)
+		with the following equation: 
+		<br>
+		\[ Color_{(x,y)} = αColor_A +  βColor_B +  γColor_C \]
+		
+		Here, \(α\) represents the distance from the point (x,y) to the edge BC, divided by the distance from vertex A to the edge BC. It is the proportion
+		of the distance from the point (x,y) and the vertex A from the edge BC. This logic applies to all the other 
+		terms, where β is the same logic but for vertex B and edge AC.
+		<br>
+		<br>
+		To further understand Barycentric coordinates, we can first take a look at how it works for one triangle. 
+		<br>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task4_assist.png" width="600px"/>
+				  <figcaption>Figure 1</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+		<br>
+		Here, we can see that all vertices have a color assigned to them, and as we get further away from each vertex, the colors begin to blend.
+		For yellow vertex A in the bottom left for example, as the points in the triangle get further away from A, the proportion of the distance described above gets smaller, meaning 
+		α decreases and amount of color A (yellow) decreases.
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task4.png" width="600px"/>
+				  <figcaption>Test 7</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
 
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
