@@ -65,21 +65,8 @@
 		  <br>
 		\[ L(x, y) = V · N = -(x - x0)(y1 - y0) + (y - y0)(x1 - x0) \] <br>
 
-		If this value is greater than zero for all edges (or equal to zero if it's on the line), then we know this sample point must be inside of our triangle. 
-		Seen in our code here:<br><br>
+		If this value is greater than zero for all edges (or equal to zero if it's on the line), then we know this sample point must be inside of our triangle. <br><br>
 
-		<code>
-            float xNew = x + 0.5;<br>
-            float yNew = y + 0.5;<br>
-            <br>
-            if ((-1 * (xNew -x0) * (y1-y0)) + ((yNew -y0) * (x1-x0)) >= 0) {<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;if ((-1 * (xNew - x1) * (y2 - y1)) + ((yNew - y1) * (x2 - x1)) >= 0) {<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ((-1 * (xNew - x2) * (y0 - y2)) + ((yNew - y2) * (x0 - x2)) >= 0) {<br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fill_pixel(xNew, yNew, color);<br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}   <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;}<br>
-            }<br>
-		</code><br><br>
 		As of right now, our algorithm does this for every sample point in the 'bounding box' of each triangle to select a smaller number of points to test. This means that
 		relative to the question asked in Task 1 regarding our algorithms efficiency, it has exactly the same efficiency as one that checks each sample within the bounding box of the triangle.  <br><br>
 		
