@@ -268,7 +268,49 @@
 
 		
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Level sampling is the process of selecting the correct sample (or level) of a texture to determine the appropriate color of the pixel. This is a key step because it allows releastic and 
+		detailed graphics by choosing how much texture detail to apply. Level sampling uses the mipmaps data structure to store smaller, precomputed versions of the original texture. By picking 
+		the right level based on how the texture is scaled, level sampling reduces aliasing and improves the quality. <br><br>
+		
+		In our implementation, we determine which mipmap level to use by looking at how much the texture coordinated (u,v) are changing between nearby pixels. We calculate the distance between the 
+		current coordinate and its neighbors using the disance formula in the x and y direction. We took the larger of the two distances and computed the log base 2 of it. This number shows us 
+		which mipmap level best fits with how much the texture is being scaled or zoomed at that spot. To compare, please see our results below: <br><br>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="screenshot_7-10_18-38-17.png" width="500px"/>
+				  <figcaption>Zero level & nearest pixel sampling</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="screenshot_7-10_18-38-27.png" width="500px"/>
+				  <figcaption>Zero level & bilinear pixel sampling </figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="screenshot_7-10_18-38-47.png" width="500px"/>
+				  <figcaption>Nearest level & nearest pixel sampling</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="screenshot_7-10_18-39-8.png" width="500px"/>
+				  <figcaption>Nearest level & bilinear sampling</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		From the three techniques we implemented (pixel sampling, level sampling, and sampling rate), we noticed tradeoffs in speed, usage, and antialiasing power. Pixel sampling controls how 
+		the color of a pixel is selected from the texture. This is done by using P_NEAREST which applies the color of the nearest texel. On the other hand, P_LINEAR blends nearby texels. 
+		P_NEAREST is faster as it only requires information about the nearest texel and uses less memory. Its downside is that it results in blocky graphics. P_LINEAR blends the colors and
+		the resulting graphic is smoother. However, this requires more time compute and storage. Pixel sampling has basic antialiasing power. Level sampling decides the level of the texture to 
+		use from the mipmap. L_ZERO uses the original resolution and texture. This has a fast time compute but is prone to aliasing. L_NEAREST picks the closest level. L_LINEAR blends between 
+		levels allowing smoothness. L_LINEAR has the slowest time compute of the three due to numerous computations, but it has the best quality. Level sampling has decent antialiasing power. 
+		The sampling rate improves image quality by taking a sample per pixel. With a smaller sampling rate, the speed is fast but we lack attention to details. Increasing the sample rate reduces 
+		aliasing but requires more memory and time compute. The samples per pixel has great antialiaing power as we increase the sampling rate, as it smoothes the edges and details.
+		Overall, better antialiasing requires more storage and time compute whereas faster compute and less memory sacrifice overall graphic quality. <br><br>
+		
 
 		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
