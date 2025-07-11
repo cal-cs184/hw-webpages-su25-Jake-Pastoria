@@ -274,7 +274,8 @@
 		
 		In our implementation, we determine which mipmap level to use by looking at how much the texture coordinated (u,v) are changing between nearby pixels. We calculate the distance between the 
 		current coordinate and its neighbors using the disance formula in the x and y direction. We took the larger of the two distances and computed the log base 2 of it. This number shows us 
-		which mipmap level best fits with how much the texture is being scaled or zoomed at that spot. To compare, please see our results below: <br><br>
+		which mipmap level best fits with how much the texture is being scaled or zoomed at that spot. As seen below, nearest pixel sampling results in more jagged and blocky edges whereas blinear
+		sampling is smoother and blends, giving a more nautral output. The results below depict the tradeoff between sharpness and smoothness depending on the sampling methods.<br><br>
 
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
@@ -301,7 +302,7 @@
 			</table>
 		</div><br><br>
 
-		From the three techniques we implemented (pixel sampling, level sampling, and sampling rate), we noticed tradeoffs in speed, usage, and antialiasing power. Pixel sampling controls how 
+		From the three techniques we implemented (pixel sampling, level sampling, and sampling per pixel), we noticed tradeoffs in speed, usage, and antialiasing power. Pixel sampling controls how 
 		the color of a pixel is selected from the texture. This is done by using P_NEAREST which applies the color of the nearest texel. On the other hand, P_LINEAR blends nearby texels. 
 		P_NEAREST is faster as it only requires information about the nearest texel and uses less memory. Its downside is that it results in blocky graphics. P_LINEAR blends the colors and
 		the resulting graphic is smoother. However, this requires more time compute and storage. Pixel sampling has basic antialiasing power. Level sampling decides the level of the texture to 
