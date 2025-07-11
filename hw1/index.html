@@ -268,14 +268,10 @@
 
 		
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
-		Level sampling is the process of selecting the correct sample (or level) of a texture to determine the appropriate color of the pixel. This is a key step because it allows releastic and 
-		detailed graphics by choosing how much texture detail to apply. Level sampling uses the mipmaps data structure to store smaller, precomputed versions of the original texture. By picking 
-		the right level based on how the texture is scaled, level sampling reduces aliasing and improves the quality. <br><br>
+		Level sampling is the process of selecting the most appropriate mipmap level to determine the ideal level of detail and size that a texture should have based on how the texture appears in screen space. This is a key step because it allows realistic and detailed graphics by choosing how much texture detail to apply, even in cases of texture minification. Level sampling uses mipmaps to store downscaled, precomputed versions of the original texture. By picking the right level based on how the texture is scaled relative to the screen space, level sampling reduces aliasing and can also prevent issues of minification, such as the moiré pattern.
+ <br><br>
 		
-		In our implementation, we determine which mipmap level to use by looking at how much the texture coordinated (u,v) are changing between nearby pixels. We calculate the distance between the 
-		current coordinate and its neighbors using the disance formula in the x and y direction. We took the larger of the two distances and computed the log base 2 of it. This number shows us 
-		which mipmap level best fits with how much the texture is being scaled or zoomed at that spot. As seen below, nearest pixel sampling results in more jagged and blocky edges whereas blinear
-		sampling is smoother and blends, giving a more nautral output. The results below depict the tradeoff between sharpness and smoothness depending on the sampling methods.<br><br>
+		In our implementation, we determine which mipmap level to use by looking at how much the texture coordinates (u,v) are changing between nearby pixels. We calculate the distance between the current coordinate and its neighbors using the distance formula in the x and y directions. We took the larger of the two distances and computed the log base 2 of it. This number shows us which mipmap level best fits with how much the texture is being scaled or zoomed at that spot. As seen below, nearest pixel sampling results in more jaggies and blocky edges, whereas bilinear sampling is smoother and blends, giving a more natural output. The results below depict the tradeoff between sharpness and smoothness depending on the sampling methods.<br><br>
 
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
@@ -302,30 +298,23 @@
 			</table>
 		</div><br><br>
 
-		From the three techniques we implemented (pixel sampling, level sampling, and sampling per pixel), we noticed tradeoffs in speed, usage, and antialiasing power. Pixel sampling controls how 
-		the color of a pixel is selected from the texture. This is done by using P_NEAREST which applies the color of the nearest texel. On the other hand, P_LINEAR blends nearby texels. 
-		P_NEAREST is faster as it only requires information about the nearest texel and uses less memory. Its downside is that it results in blocky graphics. P_LINEAR blends the colors and
-		the resulting graphic is smoother. However, this requires more time compute and storage. Pixel sampling has basic antialiasing power. Level sampling decides the level of the texture to 
-		use from the mipmap. L_ZERO uses the original resolution and texture. This has a fast time compute but is prone to aliasing. L_NEAREST picks the closest level. L_LINEAR blends between 
-		levels allowing smoothness. L_LINEAR has the slowest time compute of the three due to numerous computations, but it has the best quality. Level sampling has decent antialiasing power. 
-		The sampling rate improves image quality by taking a sample per pixel. With a smaller sampling rate, the speed is fast but we lack attention to details. Increasing the sample rate reduces 
-		aliasing but requires more memory and time compute. The samples per pixel has great antialiaing power as we increase the sampling rate, as it smoothes the edges and details.
-		Overall, better antialiasing requires more storage and time compute whereas faster compute and less memory sacrifice overall graphic quality. <br><br>
-		
+		From the three techniques we implemented (pixel sampling, level sampling, and supersampling), we noticed tradeoffs in speed, memory usage, and antialiasing power.  <br><br>
+		Pixel sampling controls how the color of a pixel is selected from a texture. Nearest pixel sampling simply applies the color of the nearest texel, while bilinear sampling blends nearby texels. Nearest pixel sampling is faster as it only requires information about the nearest texel, which uses less memory. Its downside is that the result is blocky and contains more jaggies. Bilinear sampling interpolates the colors, resulting in a much smoother result. However, this requires more time, computing, and storage in memory. Overall, pixel sampling alone has modest antialiasing power, as only bilinear sampling results in any antialiasing. 
+		<br><br>
+		Level sampling decides the level of the texture to use from the mipmap. One approach, which takes the zeroth level, uses the original resolution and texture. This is extremely fast and efficient, but is prone to aliasing and doesn’t assist in solving the problem of minification. Another approach, nearest level sampling, actually calculates the appropriate level for a given object in screen space. This method does a much better job at anti-aliasing, as it reduces the effects of minification. The final level sampling approach linearly interpolates various levels, which creates a greater sense of smoothness. As a result of this approach’s large computational cost, it has great quality and the ability to prevent visual artifacts and smoothly transition from high to low texture complexity. Overall, level sampling has a powerful ability to antialias, as it’s able to reduce the effects of minification through the various levels of texture mipmaps. The main tradeoff for this method is that storing mipmaps requires around 33% more memory space.
+		<br><br>
+		Finally, supersampling can antialias by increasing the sampling rate, which takes more than one sample per pixel. With a sampling rate of 1, the speed is fast, yet aliasing can be common due to the discrete nature of taking just one sample per pixel. Increasing the number of samples per pixel reduces aliasing but requires more memory, computations, and time. Supersampling has an extremely significant ability to antialias, as taking more samples smooths edges and eliminates disconnected lines. Although this method is great for antialiasing, the cost of increasing the sampling rate too much is a blurrier image, in addition to higher memory usage due to the dimension of the overall computation. 
+		<br><br>
+		Overall, while antialiasing can make images look smooth, refined, and more visually comprehensible, it also requires more storage and time to compute and can even result in blurry images.
 
-		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
+		<h2>Task 7: Extra Credit - Draw Something Creative!</h2>
+		In this section of the extra credit, we drew the famous album cover from Pink Floyd's "The Dark Side of the Moon." This was all manually done with "colortris."
+		<figure>
+			<img src="extracred.png" alt="Lion" style="width:50%"/>
+			<figcaption></figcaption>
+		</figure>
+
 		</div>
 	</body>
 </html>
