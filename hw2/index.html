@@ -177,10 +177,49 @@
 			</table>
 
 		<h3>Part 4: Edge flip</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		The edge flip operation is vital for mesh manipulation and results in the selected edge rotating without creating or destroying new elements. In order to implement this feature,
+		I initially created pointers for each vertex, face, and half-edge, then began shuffling them to their correct locations after the flip. I first swapped the half-edges around the 
+		edge that is being flipped, then reassigned everything from there. This part took a significant amount
+		of time to debug due to one small logical issue, which caused all half-edges to assign their faces incorrectly. This resulted in one face occasionally disappearing after the flip.     
+
+		<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task4_before.png" width="400px"/>
+				  <figcaption>Before flips</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task4_after.png" width="400px"/>
+				  <figcaption>After flips</figcaption>
+				</td>
+			  </tr>
+			</table>
 
 		<h3>Part 5: Edge split</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		in this part I introduced the ability to split an edge, which creates new edges, faces, and half-edges. My technique for the edge split was nearly identical to the previous section, 
+		however this time I started with the creation of a diagram that planned out which half-edge, face, or edge would go where relative to the original elements. 
+		To start my actual implementation, I began with first instantiating all the iterators of all the new elements to keep track of them. I then defined all the parameters for the 
+		half-edges and connected the faces/edges to each half-edge. 
+
+		<figure>
+			<img src="task5_before.png" alt="helper1" style="width:300px"/>
+			<figcaption>Original surface</figcaption>
+		</figure>
+		
+
+		<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task5_split.png" width="350px"/>
+				  <figcaption>Surface after one split, creating new pink point</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task5_splitflip.png" width="350px"/>
+				  <figcaption>Surface after flipping along the pink line</figcaption>
+				</td>
+			  </tr>
+			</table>
 
 		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
