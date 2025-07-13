@@ -32,11 +32,11 @@
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to main webpage: <a href="https://cal-cs184.github.io/hw-webpages-su25-Jake-Pastoria/">https://cal-cs184.github.io/hw-webpages-su25-Jake-Pastoria/</a>
 
 		<br>
 		
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to GitHub repository: <a href="https://github.com/cal-cs184/hw2-meshedit-j#">https://github.com/cal-cs184/hw2-meshedit-j#</a>
 
 		<figure>
 			<img src="teapot.png" alt="Teapot" style="width:50%"/>
@@ -53,41 +53,128 @@
 		<h2>Section I: Bezier Curves and Surfaces</h2>
 
 		<h3>Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Unlike triangles, Bezier curves can be used to generate smooth and rounded edges for surface modeling. A Bezier curve of \( n \) control points is of degree \( n - 1\),
+		defined as \( p_1, p_2,...,p_{n} \). Here, de Casteljau's algorithm is implemented to create these curves, which involves a recursive set of steps: 
+		
+		<br>
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+		<ol>
+
+			<figure>
+			<img src="task1_helper0.png" alt="helper0" style="width:30%"/>
+			<figcaption>5 Control Points</figcaption>
+			</figure>
+
+			<li>For each pair of consecutive points \( p_i, p_{i+1},\), linearly interpolate between these points using the formula \( (1-t)p_i + tp_{i+1} \), where \( 0 ≤ t ≤ 1 \). This 
+				results in \( n - 1\) points in this intermediate set. 
+			</li>
+
+			<figure>
+			<img src="task1_helper1.png" alt="helper1" style="width:30%"/>
+			<figcaption>Intermediate set of 4 points after 1 subdivision</figcaption>
+			</figure>
+
+			<li>
+				Continue step 1 recursively until you are left with one control point, shown in red below. The slope at this control point will be the slope of the Bezier curve at this point.
+			</li>
+
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task1_helper3.png" width="400px"/>
+				  <figcaption>End of the recursive subdivision</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task1_helper4.png" width="400px"/>
+				  <figcaption>Bezier curve (green) drawn through \( p_1\), \( p_5\), <br> and the final intermediate point (red)</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</ol>
+		
+		Here is another example of a degree 6 bezier curve. <br><br>
+
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="task1_main1.png" width="300px"/>
+				  <figcaption>0 subdivisions</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="task1_main2.png" width="300px"/>
+				  <figcaption>1 subdivision</figcaption>
 				</td>
 			  </tr>
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="task1_main3.png" width="300px"/>
+				  <figcaption>2 subdivisions</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="task1_main4.png" width="300px"/>
+				  <figcaption>3 subdivisions</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task1_main5.png" width="300px"/>
+				  <figcaption>4 subdivisions</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task1_main6.png" width="300px"/>
+				  <figcaption>5 subdivisions</figcaption>
 				</td>
 			  </tr>
 			</table>
+
+			<figure>
+			<img src="task1_dif.png" alt="helper1" style="width:300px"/>
+			<figcaption>Variation of previous points with greater t</figcaption>
+			</figure>
 		</div>
 
 		<h3>Part 2: Bezier surfaces with separable 1D de Casteljau</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		This section uses de Casteljau's algorithm to generate Bezier surfaces, as seen below. The algorithm is identical to the previous individual Bezier curves; however, these surfaces
+		consider curves from two dimensions. Each Bezier patch is a 4x4 surface of 3-dimensional control points, and is constructed by first applying de Casteljau's algorithm to one dimension 
+		with parameter \( u \), thus creating 4 sub-curves and eventually 4 interpolated points (one per row). You can then	use de Casteljau's algorithm again with parameter \( v \) 
+		on these points, giving you one point \( P\) that lies on the Bezier surface. \( u \) and \( v \) in this case are the interpolation parameters, and can be thought of as coordinates 
+		that determine which point on this surface is evaluated.
+
+		<figure>
+			<img src="task2.png" alt="helper1" style="width:600px"/>
+			<figcaption>teapot.bez Bezier Surface</figcaption>
+		</figure>
 
 		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
 
 		<h3>Part 3: Area-weighted vertex normals</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Here, I've implemented area-weighted vertex normals to create Phong shading using a mesh represented by the "Half-Edge" structure. To calculate this normal for a given 
+		vertex \( v\), we want to compute the normalized sum of the faces incident to \( v\):  
+		
+		\[ N_v = \frac{\sum_i N_i}{\left\| \sum_i N_i \right\|} \]
+
+		To do this, I calculate the normal for each that is incident to \( v\) by traversing through the Half-Edges. For each face, I take two vectors inside in the face (specifically 
+		subtracting the other two vertices from \( v\)), then do the cross product to get the normal vector. After doing this for each face and summing the resulting normals, we then normalize
+        to get the normal vector for \( v\).  
+		<br><br>
+
+		The difference between flat shading and Phong shading can be seen in the figures below.
+		<br><br>  
+
+
+		<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task3_normal.png" width="400px"/>
+				  <figcaption>Flat shading</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task3_phong.png" width="400px"/>
+				  <figcaption>Phong shading</figcaption>
+				</td>
+			  </tr>
+			</table>
 
 		<h3>Part 4: Edge flip</h3>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
