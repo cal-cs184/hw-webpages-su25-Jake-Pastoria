@@ -222,21 +222,112 @@
 			</table>
 
 		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		For loop subdivision, I implemented the split and flip method. This involves taking each triangle, splititng it into four by connecting the midpoints, then flipping
+		any new edge that connects a new vertex to an old vertex. I began this operation by first computing the new positions for the old vertices, which requires finding the 
+		weighted average of the neighboring vertices. After this, I calculated the positions of the new vertices, followed by splitting every edge in the original mesh. Once this
+		was done, I could flip the new edges that connected new and old vertices, and then finally move all vertices to their correct positions. 
+		<br><br>
+		 Here is the loop subdivision done on a torus.
+<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task6_torus1.png" width="300px"/>
+				  <figcaption>0 subdivisions</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task6_torus2.png" width="300px"/>
+				  <figcaption>1 subdivision</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task6_torus3.png" width="300px"/>
+				  <figcaption>2 subdivisions</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task6_torus4.png" width="300px"/>
+				  <figcaption>3 subdivisions + Phong shading</figcaption>
+				</td>
+			  </tr>
+			</table>
+		<br><br>
+			Debugging this part was challenging, as my initial attempt seemed to be be completeley broken. After commenting out my flipping logic, I realized that the mesh was correct 
+			up until this point, meaning the flipping was incorrect. In order to resolve this, I added to the GUI so that each edge would show whether it was new. From this, I was able to
+			discover that I was incorrectly flipping over edges that were in the original mesh. <br><br>
+
+			Another issue I ran into was that one to two vertices per shape were 'burrowing' into the mesh, and weren't moving like the rest. I decided to add some debugging lines
+			that checked whether each vertex and half-edge were pointing to each other, which revealed that I forgot to assign these pointers correctly in the previous tasks.
+			
+			<br><br>
+
+			In regards to sharp edges, I noticed that they would remain somewhat sharp and pointy regardless of how many times I split. To prevent this,
+			I preprocessed these edges by splitting the neighboring edges (highlighted in white and pink in the image below) to prevent the residual sharpness.<br><br>
+
+			<figure>
+			<img src="task6_sharp.png" alt="helper1" style="width:300px"/>
+			<figcaption>Sharp edge from subdivision </figcaption>
+			</figure>
+
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task6_guide.png" width="300px"/>
+				  <figcaption>Edges to pre-split</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task6_final.png" width="300px"/>
+				  <figcaption>After pre-splitting edges</figcaption>
+				</td>
+			  </tr>
+			</table>
+
+			<br><br>		
+			
+
+			
+
+		Finally, when subdividing a cube, it becomes slightly asymmetric, as seen in the image below.	
+
+		The main reason for this is the unusual splitting in the default cube, where each side is only made of two triangles. Not only this, but the pattern differs throughout the 
+			entire cube.
+
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task6_asymbegin.png" width="300px"/>
+				  <figcaption>Initial cube mesh</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task6_asym.png" width="300px"/>
+				  <figcaption>Resulting subdivided mesh</figcaption>
+				</td>
+			  </tr>
+			</table>
+
+		In order to fix this, I preprocessed the cube by splitting the edge on each side of the square, making it more normalized. By doing so, the subdivisions are more symmetrical, and it
+		results in a significantly better cube. This emphasizes the importance of having normalized and generally equal mesh subdivision patterns. 
+
+		<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task6_asympreprocess.png" width="300px"/>
+				  <figcaption>Preprocessed cube mesh</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task6_asymclean.png" width="300px"/>
+				  <figcaption>Resulting subdivided mesh</figcaption>
+				</td>
+			  </tr>
+			</table>
 
 		<h2>(Optional) Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
+		
+
+
+
 		</div>
 	</body>
 </html>
