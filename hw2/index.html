@@ -56,7 +56,13 @@
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		While triangles are a fantastic tool for representing meshes, implemeting smooth curves is vital for creating realistic-looking objects. This homework
+		 begins by exploring one specific type of curve: the Bézier curve. These curves allow me to create a degree \(n\) polynomial with only \(n + 1\) control points, and I implement this in 
+		 code using de Casteljau's 
+		 algorithm. By applying this algorithm multiple times in varying dimensions, I am able to create what's known as a bezier surface, which I can use to visualize this smooth geometry.
+		  Later in the assignment I implement Blinn-Phong 
+		 lighting, which creates significantly improved surface shading. Finally, I add mesh manipulation tools such as edge flipping, edge splitting, and mesh subdivision.
+		 
 
 		<h2>Section I: Bezier Curves and Surfaces</h2>
 
