@@ -57,11 +57,17 @@
 
 		<h2>Overview</h2>
 		While triangles are a fantastic tool for representing meshes, implemeting smooth curves is vital for creating realistic-looking objects. This homework
-		 begins by exploring one specific type of curve: the Bézier curve. These curves allow me to create a degree \(n\) polynomial with only \(n + 1\) control points, and I implement this in 
+		 begins by exploring one specific type of curve: the Bézier curve. These curves allow one to create a degree \(n\) polynomial with only \(n + 1\) control points, and I implement this in 
 		 code using de Casteljau's 
 		 algorithm. By applying this algorithm multiple times in varying dimensions, I am able to create what's known as a bezier surface, which I can use to visualize this smooth geometry.
 		  Later in the assignment I implement Blinn-Phong 
 		 lighting, which creates significantly improved surface shading. Finally, I add mesh manipulation tools such as edge flipping, edge splitting, and mesh subdivision.
+
+		 <br><br>
+
+		 All together, this project gave me a foundational understanding for how some meshes are created and represented through code. Most interesting to me was adjusting and creating 
+		 my own mesh, as in order to correctly import the file I had to go through and change much of the project's skeleton code. I hope to use this background code as an inspiration for 
+		 my final project.
 		 
 
 		<h2>Section I: Bezier Curves and Surfaces</h2>
@@ -336,11 +342,43 @@
 			  </tr>
 			</table>
 
-		<!-- <h2>(Optional) Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. -->
+		<h2>Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
+		For extra credit, I created a full mesh of the UC Berkeley Campanile. This is the mesh I created in blender: <br><br>
 
-		
+		<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="blenderFull.png" width="300px"/>
+				  <figcaption>Original Blender Mesh</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="Blendercampanile.png" width="650px"/>
+				  <figcaption>Original Blender Mesh (Side Shot)</figcaption>
+				</td>
+			  </tr>
+			</table>
 
+			<br><br>
+			Here is the mesh exported to my render with a variation of the Blinn-Phong shader: 
+			<br><br>
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="campanile1.png" width="440px"/>
+				  <figcaption>In Render Mesh</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="campanile2.png" width="400px"/>
+				  <figcaption>In Render Mesh (After one subdivision)</figcaption>
+				</td>
+			  </tr>
+			</table>
+			<br><br>
+			Beyond creating the mesh in Blender, I modified the parameters of the Blinn-Phong shader to give it a more realistic look. Since the Campanile is 
+			rough, I adjusted the specular aspect of the light to be a little bit less intense. By doing so, the mesh appears at least slightly more rough. 
+			In addition, I also adjusted the background color of the render, so that the background had somewhat of a sky colored blue. The subdivision mainly affected 
+			the columns and smaller details of the mesh and slightly rounded the edges of the tower. In addition to this, the holes I created in the sides of the tower became 
+			larger, creating rounded dents in the side of the building. 
 
 
 		</div>
