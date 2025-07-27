@@ -27,13 +27,18 @@
 	</head>
 	<body>
 		<div class="container">
-		<h1>CS184/284A Spring 2025 Homework 3 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+		<h1>CS184/284A Summer 2025 Homework 3 Write-Up</h1>
+		<div style="text-align: center;">Jake Pastoria</div>
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		<br>
+
+		Link to main webpage: <a href="https://cal-cs184.github.io/hw-webpages-su25-Jake-Pastoria/">https://cal-cs184.github.io/hw-webpages-su25-Jake-Pastoria/</a>
+
+		<br>
+		
+		Link to GitHub repository: <a href="https://github.com/cal-cs184/hw-pathtracer-updated-jp">https://github.com/cal-cs184/hw-pathtracer-updated-jp</a>
 		
 		<figure>
 			<img src="cornell.png" alt="Cornell Boxes with Bunnies" style="width:70%"/>
@@ -48,7 +53,59 @@
 		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
 
 		<h2>Part 1: Ray Generation and Scene Intersection</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		In Part 1, I implemented ray generation and ray-triangle/ray-circle intersection, which allows the most basic ray tracing. I began this process by generating rays that convert coordinates 
+		in the Image Space into a Ray in the camera space. This ray is defined by the ray equation: 
+		
+		\[r(t) = o + td\]
+
+		Here, \(o\) is the origin of the ray, \(d\) is the direction (a 3-dimensional vector) that the ray points, and \(t\) is the time/distance along the vector \(d\) starting from \(o\).
+		In the camera space, we define this "Camera Ray" to originate from \(o = (0,0,0)\), and point towards the "sensor" of the camera which is located at \(z = -1\). Finally, we can 
+		rotate this ray into the world space and place it at the camera's position, which places the ray into our scene.
+
+		<br><br>
+
+		To fill in each pixel on the screen, we generate numerous rays per pixel, and simply find the average scene radiance along those rays. For this beginning section, the estimated radiance 
+		along any given ray is simply either the direction that the ray points or the normal of the object it hits. All of the work so far results in the following image:
+
+		<figure>
+			<img src="p1_1.png" alt="Cornell Boxes with Bunnies" style="width:50%"/>
+			<figcaption>banana.dae</figcaption>
+		</figure>
+
+
+		The next step is to implement ray-triangle and ray-circle intersections, and for circles, the solutions for the intersections can be easily calculated by plugging in the ray equation to the 
+		circle equation. Ray-triangle intersection is significantly more difficult, as this involves multiple steps in order to detect collisions. My method first calculates if the ray intersects 
+		with the plane that the triangle lays inside of. If there is an intersection with the plane, I find the value of \(t\) where this intersection happens. As long as this t is in between the 
+		predefined minimum and maximums, we now need to determine whether this point lies inside of the triangle. To do this, I used the geometric interpretation of the Barycentric coordinate 
+		system, which involves finding the proportional areas of \(	α\), \(	β\), and \(γ\). Using these three values, we can tell if the ray intersects inside the triangle by making sure that 
+		these three values are all greater than 0 (in addition to some other checks to make sure we don't include points outside the edges of the triangle). 
+
+		<br><br>
+
+		Here are the renders generated using the previously described methods:
+		<br><br>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="p1_2.png" width="400px"/>
+				  
+				</td>
+				<td style="text-align: center;">
+				  <img src="p1_3.png" width="400px"/>
+				  
+				</td>
+			</table>
+		</div>
+		<figure>
+			<img src="p1_4.png" alt="Cornell Boxes with Bunnies" style="width:400px"/>
+		
+		</figure>
+		
+
+
+
+
 
 		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
