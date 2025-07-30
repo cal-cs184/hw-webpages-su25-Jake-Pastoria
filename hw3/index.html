@@ -102,39 +102,82 @@
 		
 		</figure>
 		
-
-
-
-
-
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+		
+		<h2>Part 2: Bounding Volume Hierarchy</h2>
+		We can use a Bounding Volume Hierarchy (BVH) to optimize our ray tracing by grouping together primitives and creating combined bounding boxes. This Hierarchy is a binary tree, with each node 
+		pointing to its left and right sub-nodes that either contain more connections or are leaf nodes. This process starts by taking in a list of all the primitives and generating a root node 
+		with a bounding box that contains all the primitives. 
+		<br><br>
+		From there, we need to establish a heuristic for where to split our bounding box and continue creating the sub-nodes. 
+		My method finds the axis (\(x\), \(y\), or \(z\)) that contains the largest extent (the largest difference between the min and max), as this essentially means it has the most variance.
+		 This method assumes that the dimension with the most variance captures the most information about our mesh (similar to the thought process of Principal Component Analysis) and are 
+		therefore the best to split across. After finding the mean of the centroids of all the primitives bounding boxes along this axis, I split at that value.
+		<br><br>
+		We can use this BVH to vastly decrease the rendering team needed for each dae file. Here are some examples of highly complex .dae files:
+		<br><br>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="p2_1.png" width="400px"/>
+				  <figcaption>cow.dae</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="p2_2.png" width="400px"/>
+				  <figcaption>lucy.dae</figcaption>
 				</td>
 			  </tr>
+			  </table>
+		</div>
+		<figure>
+			<img src="p2_3.png" alt="Cornell Boxes with Bunnies" style="width:400px"/>
+			<figcaption>maxplanck.dae</figcaption>
+		</figure>
+
+		The BVH has reduced the computational load from \(O(n)\) to \(O(log(n))\), which results in drastic differences in rendering times for scenes with moderately and highly complex meshes. 
+		We an explore this time reduction for moderately complex meshes, such as cow.dae. Without using a BVH, this image below takes 44.05 seconds to redner. After adding the BVH, the rendering 
+		time drastically drops to 0.25 seconds: <br> <br>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="p2_4.png" width="400px"/>
+				  <figcaption>cow.dae w/o BVH (44.05 seconds)</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="p2_5.png" width="400px"/>
+				  <figcaption>cow.dae w/ BVH (0.25 seconds)</figcaption>
 				</td>
 			  </tr>
-			</table>
+			  </table>
 		</div>
-		
-		<h2>Part 2: Bounding Volume Hierarchy</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		<br> <br>
+		This speed increase is similar for all moderately complex scenes, such as beetle.dae. We can see that rendering without the BVH takes 58.9 seconds, while rendering with takes about 0.3 
+		seconds. 
+		<br> <br>
+
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="p2_6.png" width="400px"/>
+				  <figcaption>beetle.dae w/o BVH (58.9 seconds)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p2_7.png" width="400px"/>
+				  <figcaption>beetle.dae w/ BVH (0.3 seconds)</figcaption>
+				</td>
+			  </tr>
+			  </table>
+		</div>
+
+		<br> <br>
+		Due to the BVH, each ray no longer needs to check every primitive during rendering, significantly reducing the computational load of ray tracing. The bounding boxes 
+		define the potential region in which any enclosed primitive could be hit, allowing us to quickly eliminate primitives that the ray couldn't possibly intersect.
+
 
 		<h2>Part 3: Direct Illumination</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
