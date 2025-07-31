@@ -180,7 +180,104 @@
 
 
 		<h2>Part 3: Direct Illumination</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Through the use of direct illumniation, we are able to implement our first lighting system. In this part, we give each primitive a material using a Bidirectional Scattering Distribution
+		Function (BSDF), mainly using and diffuse BSDFs. After giving these primitives a material, we now can cast rays as we've done in the previous parts 
+		into the scene. <br><br>
+		When these rays hit a point on a primitive, we need to determine how much light that point adds to our ray, which involves considering all light that could be hitting this 
+		specific point from other parts of the scene. From a conceptual approach, this means that we need to send out rays from this point and test if they hit a light. If a ray hits a light, 
+		then we know that this point is lit, adding to the radiance of our ray. Computationally we need to approximate this, which leads us to two different sampling methods: Uniform Hemisphere 
+		Sampling, and Importance Sampling of the lights. 
+		
+		<br><br>
+		Uniform Hemisphere Sampling involves sampling uniformly at random in a hemisphere around the point that is struck by the original ray. In essence, sending out rays at random 
+		gives us an estimation of how light from the scene arrives at this point. While this is an intuitive way to estimate the amount of light hitting any given point, the inconsistency and 
+		randomness associated with this method often creates a noisy result as seen below: <br><br>
+		
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="p3_hemisphere.png" width="400px"/>
+				  <figcaption>Uniform Hemisphere Sampling CBbunny.dae</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p3_hemisphere2.png" width="400px"/>
+				  <figcaption>Uniform Hemisphere Sampling CBspheres_lambertian.dae</figcaption>
+				</td>
+			  </tr>
+			  </table>
+		</div>
+
+
+
+		It's important to notice that this noise is a direct result of the rays we cast in our sample missing the light, which lowers the average radiance that is passed back through our 
+		ray. The next sampling method serves as a method of reducing this noise, as instead of casting rays out randomly, we only cast rays towards lights.
+
+		<br><br>
+
+		This next method is a type of importance sampling, and in this case we are choosing to only sample the lights directly. When our ray hits a point on a primitive, we no longer send 
+		out rays in random directions, we instead send them directly towards the lights. In my implementation, this is done by looping through each light object in the scene and sending
+	    rays randomly to different parts of the light (point lights are only sampled once). Similar to the previous section, if these rays don't intersect another object before this light then we add 
+		to our rays radiance. This method generally results in less noisy renders: <br><br>
+		
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="p3_importance.png" width="400px"/>
+				  <figcaption>Importance Sampling Lights CBbunny.dae</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p3_importance2.png" width="400px"/>
+				  <figcaption>Importance Sampling Lights CBspheres_lambertian.dae</figcaption>
+				</td>
+			  </tr>
+			  </table>
+		</div>
+
+		<br><br>
+
+		The images above show the drastic reduction in noise as a result of importance sampling the lights rather than sampling uniformly at random for reasons listed above. In addition, 
+		sending rays only at the lights lowers excess computational work, as this reduces the number of rays that end up missing a light source. Visually, importance sampling results in 
+		significantly better renders as a result of its consistent shading and decrease in noise. 
+		
+		<br><br>
+
+		It is important to note that the results seen in the images above are highly dependent on the paramters we set for our system. Some important parameters are number of camera rays per pixel,
+		max ray depth, and the number of samples per area light. We can see that the amount of noise, even in light sampling, varies when we change the number of rays to sample each 
+		area light with. The results below show 1, 4, 16, and 64 samples per area light with 1 sample per pixel:
+
+				<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="p3_1.png" width="400px"/>
+				  <figcaption>1 Sample per light</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p3_4.png" width="400px"/>
+				  <figcaption>4 Samples per light</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="p3_16.png" width="400px"/>
+				  <figcaption>16 Samples per light</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p3_64.png" width="400px"/>
+				  <figcaption>64 Samples per light</figcaption>
+				</td>
+			  </tr>
+			  </table>
+		</div>
+
+		As demonstrated in the pictures above, lower sampling rates per area light in importance sampling results in noisy soft shadows. This noise is caused by points that are next to each 
+		other sampling different parts of the light, which may cause the ray to be blocked by an object despite the points being nearly identical. As we increase the number of samples per area
+		light, this effect diminishes. 
+
 
 		<h2>Part 4: Global Illumination</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
