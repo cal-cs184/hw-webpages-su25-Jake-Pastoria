@@ -209,7 +209,7 @@
 			  </table>
 		</div>
 
-
+		<br><br>
 
 		It's important to notice that this noise is a direct result of the rays we cast in our sample missing the light, which lowers the average radiance that is passed back through our 
 		ray. The next sampling method serves as a method of reducing this noise, as instead of casting rays out randomly, we only cast rays towards lights.
@@ -248,6 +248,7 @@
 		It is important to note that the results seen in the images above are highly dependent on the paramters we set for our system. Some important parameters are number of camera rays per pixel,
 		max ray depth, and the number of samples per area light. We can see that the amount of noise, even in light sampling, varies when we change the number of rays to sample each 
 		area light with. The results below show 1, 4, 16, and 64 samples per area light with 1 sample per pixel:
+		<br><br>
 
 				<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
@@ -273,6 +274,7 @@
 			  </tr>
 			  </table>
 		</div>
+		<br><br>
 
 		As demonstrated in the pictures above, lower sampling rates per area light in importance sampling results in noisy soft shadows. This noise is caused by points that are next to each 
 		other sampling different parts of the light, which may cause the ray to be blocked by an object despite the points being nearly identical. As we increase the number of samples per area
@@ -280,7 +282,226 @@
 
 
 		<h2>Part 4: Global Illumination</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		While the direct illumination above provided a baseline level of light for objects in the scene, in order to achieve maximum visual richness we need to add global illumination through
+		adding indirect light. Global 
+		illumination provides a more realistic look to the scene by emulating light's ability to hit multiple objects before reaching the camera. 
+		<br><br>To add this to the current system, I implemented 
+		a simple function that recursively adds the light from previous bounces to the final radiance of our camera ray and thus pixel. Once the initial camera ray hits a primitive at point
+		\(p\), we add on 
+		the 'one bounce' direct radiance that we calculated in the previous part. This initial ray starts at depth = 0, and as long as we haven't hit our maximum depth, a new ray is created at
+		\(p\) pointing in a random hemispherical direction. This new ray calls this same function (doing all of the same things of the previous ray), and adds it's direct radiance to the original 
+		camera ray in addition to all the rays that follow from this recursion. 
+		<br><br>
+		The results of this global illumination (which adds both direct and indirect) can be seen below:
+
+		<br><br>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="p4_2_1.png" width="400px"/>
+				  <figcaption>CBbunny.dae</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_2_2.png" width="400px"/>
+				  <figcaption>CBspheres_lambertian.dae</figcaption>
+				</td>
+			  </tr>
+			  </table>
+		</div>
+
+		<br><br>
+
+		One way to explore the effect of indirect illumination is to isolate it from direct illumination. In this first render, only the direct illumination contributes to the radiance of a 
+		pixel.
+		
+		<figure>
+			<img src="p4_3_1.png" alt="Cornell Boxes with Bunnies" style="width:400px"/>
+			<figcaption>Direct Illumination Only</figcaption>
+		</figure>
+		
+		We can see that when we isolate the direct illumination, it looks identical to the previous part. The main characteristic of this illumination type is the harsh shadows and and the 
+		lack of influence that objects have on each other in the scene (such as how the red wall does not appear on the bunny).
+
+		<br><br>
+
+		Lets now isolate only the indirect illumination:
+
+		<figure>
+			<img src="p4_3_2.png" alt="Cornell Boxes with Bunnies" style="width:400px"/>
+			<figcaption>Indirect Illumination Only</figcaption>
+		</figure>
+
+		<br><br>
+
+		The indirect illumination alone effectively adds ambient lighting to the objects in the scene, since light is now able to reach objects that were previously in darker regions.
+
+		<br><br>
+
+		Now lets visualize only the light from the very last ray sent out by setting 'isAccumBounces = false' and changing the maximum number of bounces per ray:  
+
+		<br><br>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="p4_4_f_0.png" width="225px"/>
+				  <figcaption>0 Bounces</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_4_f_1.png" width="225px"/>
+				  <figcaption>1 Bounce</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_4_f_2.png" width="225px"/>
+				  <figcaption>2 Bounces</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_4_f_3.png" width="225px"/>
+				  <figcaption>3 Bounces</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_4_f_4.png" width="225px"/>
+				  <figcaption>4 Bounces</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_4_f_5.png" width="225px"/>
+				  <figcaption>5 Bounces</figcaption>
+				</td>
+				</tr>
+				</table>
+		</div>
+		<br><br>
+
+		Extracting the light from the last ray highlights how indirect lighting adds to the visual richness of a render. In the images that show 2 and 3 max bounces, 
+		the dark regions in the render with 1 max bounce are suddenly brighter. This is because the additional bounces (that on the 1st bounce would have gone straight into the floor) are now
+		bouncing back into the light. This provides an extremeley realistic visual as we add the radiance from these extra bounces to the final output color of these
+		 shadowed areas, which makes them significantly less harsh. Rasterization isn't able to emulate global illumination in this way, as it isn't able to trace the path of the light 
+		 throughout the scene or add ambient lighting that adapts to the scene.
+
+		<br><br>
+
+		We can now go through each render and use the same number of bounces while accumulating the direct and indirect light: 
+		
+		<br><br>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="p4_4_t_0.png" width="225px"/>
+				  <figcaption>0 Bounces</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_4_t_1.png" width="225px"/>
+				  <figcaption>1 Bounce</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_4_t_2.png" width="225px"/>
+				  <figcaption>2 Bounces</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_4_t_3.png" width="225px"/>
+				  <figcaption>3 Bounces</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_4_t_4.png" width="225px"/>
+				  <figcaption>4 Bounces</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_4_t_5.png" width="225px"/>
+				  <figcaption>5 Bounces</figcaption>
+				</td>
+				</tr>
+				</table>
+		</div>
+
+		<br><br>
+
+		The accumulated bounces in these renders combine the light from each individual bounce from the previous set of images. The combination of all these individual bounces simulates the 
+		effect of ambient lighting. 
+
+		<br><br>
+
+		While global illumination creates a realistic look, it can also take a long time to render. One way to reduce the computational load and optimize our estimation of light in our samples 
+		is to use "Russian Roulette" rendering. In this method, we're able to set both a max depth as well as a probablity of termination, which can prematurely end our indirect lighting 
+		recursion. The results of this technique can be seen below:
+
+		<br><br>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="p4_5_0.png" width="225px"/>
+				  <figcaption>0 Bounces (Russian Roulette)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_5_1.png" width="225px"/>
+				  <figcaption>1 Bounce</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_5_2.png" width="225px"/>
+				  <figcaption>2 Bounces</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_5_3.png" width="225px"/>
+				  <figcaption>3 Bounces</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_5_4.png" width="225px"/>
+				  <figcaption>4 Bounces</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_5_100.png" width="225px"/>
+				  <figcaption>100 Bounces</figcaption>
+				</td>
+				</tr>
+				</table>
+		</div>
+
+		<br><br>
+
+		One important parameter for global illumination is the number of samples that we take per pixel, as the reduces the noise associated with sending rays out in random directions. As 
+		we change this paramter, we can see how the result becomes less noisy:
+		
+		<br><br>
+		
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="p4_6_1.png" width="225px"/>
+				  <figcaption>1 Sample</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_6_2.png" width="225px"/>
+				  <figcaption>2 Samples</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_6_4.png" width="225px"/>
+				  <figcaption>4 Samples</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_6_8.png" width="225px"/>
+				  <figcaption>8 Samples</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_6_16.png" width="225px"/>
+				  <figcaption>16 Samples</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_6_64.png" width="225px"/>
+				  <figcaption>64 Samples</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p4_6_1024.png" width="225px"/>
+				  <figcaption>1024 Samples</figcaption>
+				</td>
+				</tr>
+				</table>
+		</div>
 
 		<h2>Part 5: Adaptive Sampling</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
