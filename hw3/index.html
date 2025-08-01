@@ -41,7 +41,7 @@
 		Link to GitHub repository: <a href="https://github.com/cal-cs184/hw-pathtracer-updated-jp">https://github.com/cal-cs184/hw-pathtracer-updated-jp</a>
 		
 		<figure>
-			<img src="p5_2_1.png" alt="Cornell Boxes with Bunnies" style="width:400px"/>
+			<img src="p5_2_1.png" alt="Cornell Boxes with Bunnies" style="width:500px"/>
 		</figure>
 
 		<!--
@@ -73,7 +73,8 @@
 		<br><br>
 
 		To fill in each pixel on the screen, we generate numerous rays per pixel, and simply find the average scene radiance along those rays. For this beginning section, the estimated radiance 
-		along any given ray is simply either the direction that the ray points or the normal of the object it hits. All of the work so far results in the following image:
+		along any given ray is simply either the direction that the ray points or the normal of the object it hits. All of the work so far results in the following image, which represents 
+		the color of a pixel as the direction that the ray points:
 
 		<figure>
 			<img src="p1_1.png" alt="Cornell Boxes with Bunnies" style="width:50%"/>
@@ -81,7 +82,7 @@
 		</figure>
 
 
-		The next step is to implement ray-triangle and ray-circle intersections, and for circles, the solutions for the intersections can be easily calculated by plugging in the ray equation to the 
+		The next step is to implement ray-triangle and ray-circle intersections. For circles, the solutions for the intersections can be easily calculated by plugging in the ray equation to the 
 		circle equation. Ray-triangle intersection is significantly more difficult, as this involves multiple steps in order to detect collisions. My method first calculates if the ray intersects 
 		with the plane that the triangle lays inside of. If there is an intersection with the plane, I find the value of \(t\) where this intersection happens. As long as this t is in between the 
 		predefined minimum and maximums, we now need to determine whether this point lies inside of the triangle. To do this, I used the geometric interpretation of the Barycentric coordinate 
@@ -118,7 +119,7 @@
 		<br><br>
 		From there, we need to establish a heuristic for where to split our bounding box and continue creating the sub-nodes. 
 		My method finds the axis (\(x\), \(y\), or \(z\)) that contains the largest extent (the largest difference between the min and max), as this essentially means it has the most variance.
-		 This method assumes that the dimension with the most variance captures the most information about our mesh (similar to the thought process of Principal Component Analysis) and are 
+		 This method assumes that the dimension with the most variance captures the most information about our mesh (similar to the thought process of Principal Component Analysis) and is 
 		therefore the best to split across. After finding the mean of the centroids of all the primitives bounding boxes along this axis, I split at that value.
 		<br><br>
 		We can use this BVH to vastly decrease the rendering team needed for each dae file. Here are some examples of highly complex .dae files:
@@ -143,7 +144,7 @@
 		</figure>
 
 		The BVH has reduced the computational load from \(O(n)\) to \(O(log(n))\), which results in drastic differences in rendering times for scenes with moderately and highly complex meshes. 
-		We can explore this time reduction for moderately complex meshes, such as cow.dae. Without using a BVH, this image below takes 44.05 seconds to redner. After adding the BVH, the rendering 
+		We can explore this time reduction for moderately complex meshes, such as cow.dae. Without using a BVH, this image below takes 44.05 seconds to render. After adding the BVH, the rendering 
 		time drastically drops to 0.25 seconds: <br> <br>
 
 		<div style="display: flex; flex-direction: column; align-items: center;">
@@ -188,18 +189,17 @@
 
 
 		<h2>Part 3: Direct Illumination</h2>
-		Through the use of direct illuminiation, we are able to implement our first lighting system. In this part, we give each primitive a material using a Bidirectional Scattering Distribution
-		Function (BSDF), mainly using and diffuse BSDFs. After giving these primitives a material, we now can cast rays as we've done in the previous parts 
-		into the scene. <br><br>
-		When these rays hit a point on a primitive, we need to determine how much light that point adds to our ray, which involves considering all light that could be hitting this 
+		Through the use of direct illumination, we can implement our first lighting system. In this part, we give each primitive a material using a Bidirectional Scattering Distribution
+		Function (BSDF), mainly using diffuse BSDFs that send light out equally in all directions. After giving these primitives a material, we can now cast rays into the scene. <br><br>
+		When these rays hit a point on a primitive, we need to determine how much light that point adds to our ray, which involves considering all the light that could be hitting this 
 		specific point from other parts of the scene. From a conceptual approach, this means that we need to send out rays from this point and test if they hit a light. If a ray hits a light, 
-		then we know that this point is lit, adding to the radiance of our ray. Computationally we need to approximate this, which leads us to two different sampling methods: Uniform Hemisphere 
+		then we know that this point is lit, adding to the radiance of our ray. Computationally, we need to approximate this, which leads us to two different sampling methods: Uniform Hemisphere 
 		Sampling, and Importance Sampling of the lights. 
 		
 		<br><br>
 		Uniform Hemisphere Sampling involves sampling uniformly at random in a hemisphere around the point that is struck by the original ray. In essence, sending out rays at random 
 		gives us an estimation of how light from the scene arrives at this point. While this is an intuitive way to estimate the amount of light hitting any given point, the inconsistency and 
-		randomness associated with this method often creates a noisy result as seen below: <br><br>
+		randomness associated with this method often create a noisy result as seen below: <br><br>
 		
 
 		<div style="display: flex; flex-direction: column; align-items: center;">
@@ -219,13 +219,13 @@
 
 		<br><br>
 
-		It's important to notice that this noise is a direct result of the rays we cast in our sample missing the light, which lowers the average radiance that is passed back through our 
+		It's important to notice that this noise is a direct result of the random rays we cast in our samples missing the lights, which lowers the average radiance that is passed back through our 
 		ray. The next sampling method serves as a method of reducing this noise, as instead of casting rays out randomly, we only cast rays towards lights.
 
 		<br><br>
 
-		This next method is a type of importance sampling, and in this case we are choosing to only sample the lights directly. When our ray hits a point on a primitive, we no longer send 
-		out rays in random directions, we instead send them directly towards the lights. In my implementation, this is done by looping through each light object in the scene and sending
+		This next method is a type of importance sampling, and in this case, we are choosing to only sample the lights directly. When our ray hits a point on a primitive, we no longer send 
+		out rays in random directions; we instead send them directly towards the lights. In my implementation, this is done by looping through each light object in the scene and sending
 	    rays randomly to different parts of the light (point lights are only sampled once). Similar to the previous section, if these rays don't intersect another object before this light then we add 
 		to our rays radiance. This method generally results in less noisy renders: <br><br>
 		
@@ -253,7 +253,7 @@
 		
 		<br><br>
 
-		It is important to note that the results seen in the images above are highly dependent on the parameters we set for our system. Some important parameters are number of camera rays per pixel,
+		It is important to note that the results seen in the images above are highly dependent on the parameters we set for our system. Some important parameters are the number of camera rays per pixel,
 		max ray depth, and the number of samples per area light. We can see that the amount of noise, even in light sampling, varies when we change the number of rays to sample each 
 		area light with. The results below show 1, 4, 16, and 64 samples per area light with 1 sample per pixel:
 		<br><br>
@@ -284,7 +284,7 @@
 		</div>
 		<br><br>
 
-		As demonstrated in the pictures above, lower sampling rates per area light in importance sampling results in noisy soft shadows. This noise is caused by points that are next to each 
+		As demonstrated in the pictures above, a lower sampling rate per area light, even in importance sampling results, also results noisy soft shadows and colors. This noise is caused by points that are next to each 
 		other sampling different parts of the light, which may cause the ray to be blocked by an object despite the points being nearly identical. As we increase the number of samples per area
 		light, this effect diminishes. 
 
@@ -330,7 +330,7 @@
 
 		<br><br>
 
-		Lets now isolate the indirect illumination:
+		Let's now isolate the indirect illumination:
 
 		<figure>
 			<img src="p4_3_2.png" alt="Cornell Boxes with Bunnies" style="width:400px"/>
@@ -340,11 +340,11 @@
 		<br><br>
 
 		The indirect illumination alone effectively adds ambient lighting to the objects in the scene, since light is now able to reach objects that were previously in darker regions. Compared 
-		to the direct lighting, this render is more uniformly lit as a result of the indirect light bounces.
+		to the direct lighting, this render is more uniformly lit as a result of the indirect light bouncing.
 
 		<br><br>
 
-		Now, lets visualize only the light from the very last ray sent out by setting 'isAccumBounces = false' and adjusting the maximum number of bounces per ray:  
+		Now, let's visualize only the light from the very last ray sent out by setting 'isAccumBounces = false' and adjusting the maximum number of bounces per ray:  
 
 		<br><br>
 
@@ -389,7 +389,7 @@
 
 		<br><br>
 
-		With this in mind, we can examine each render using same number of bounces, this time accumulating both the direct and indirect light: 
+		With this in mind, we can examine each render using the same number of bounces, this time accumulating both the direct and indirect light: 
 		
 		<br><br>
 
@@ -523,7 +523,7 @@
 		\[I = 1.96 \cdot \frac{\sigma}{\sqrt{n}}\]
 
 
-		We can use this formula (which is derived from a 95% confidence interval) to track a pixel's convergence as increasing variance results in an increase in \(I\). If 
+		We can use this formula (which is derived from a 95% confidence interval) to track a pixel's convergence, as increasing variance results in an increase in \(I\). If 
 		\(I \le maxTolerance \cdot \mu \), then we say that the pixel has converged and doesn't need to be sampled anymore. 
 
 		<br><br>
@@ -553,16 +553,22 @@
 			  <tr>
 				<td style="text-align: center;">
 				  <img src="p5_2_1.png" width="400px"/>
-				  <figcaption>CBbunny.dae</figcaption>
+				  <figcaption>CBspheres_lambertian.dae</figcaption>
 				</td>
 				<td style="text-align: center;">
 				  <img src="p5_2_2.png" width="400px"/>
-				  <figcaption>CBbunny.dae Rate map</figcaption>
+				  <figcaption>CBspheres_lambertian.dae Rate map</figcaption>
 				</td>
 			  </tr>
 			  </table>
 		</div>
 
+		<h3>AI Acknowledgement</h3>
+		In this assignment, the use of ChatGPT was minimal and was restricted to conceptual questions about ray-tracing or minor debugging. In order to have a good grasp of the concepts 
+		before implementing them, I'd initially go through the lecture slides for review. When I wasn't sure about a concept, I would prompt ChatGPT to
+		explain it in more detail and provide context for the concept itself. Using LLMs in this way makes the learning process more digestible and less frustrating, as I'm able to gain a 
+		much stronger conceptual understanding of the content. It was this strong conceptual understanding that made it easier for me to finish the project by myself.     
+		
 		<!-- <h2>(Optional) Part 6: Extra Credit Opportunities</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. -->
 		
