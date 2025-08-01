@@ -56,7 +56,7 @@
 		as 'converged' to a certain color.
 		<br><br> 
 		
-		The most fascinating aspect of this project was the initial cast of the camera rays, which inolved taking coordinates from the image space, casting a ray in the camera space, and 
+		The most fascinating aspect of this project was the initial cast of the camera rays, which involved taking coordinates from the image space, casting a ray in the camera space, and 
 		transforming this ray into the world space. Learning how to take a coordinate on an image plane and translate it into a ray that bounces and lives in the scene gives me a much stronger 
 		intuition about computer graphics as a whole. 
 
@@ -143,7 +143,7 @@
 		</figure>
 
 		The BVH has reduced the computational load from \(O(n)\) to \(O(log(n))\), which results in drastic differences in rendering times for scenes with moderately and highly complex meshes. 
-		We an explore this time reduction for moderately complex meshes, such as cow.dae. Without using a BVH, this image below takes 44.05 seconds to redner. After adding the BVH, the rendering 
+		We can explore this time reduction for moderately complex meshes, such as cow.dae. Without using a BVH, this image below takes 44.05 seconds to redner. After adding the BVH, the rendering 
 		time drastically drops to 0.25 seconds: <br> <br>
 
 		<div style="display: flex; flex-direction: column; align-items: center;">
@@ -188,7 +188,7 @@
 
 
 		<h2>Part 3: Direct Illumination</h2>
-		Through the use of direct illumniation, we are able to implement our first lighting system. In this part, we give each primitive a material using a Bidirectional Scattering Distribution
+		Through the use of direct illuminiation, we are able to implement our first lighting system. In this part, we give each primitive a material using a Bidirectional Scattering Distribution
 		Function (BSDF), mainly using and diffuse BSDFs. After giving these primitives a material, we now can cast rays as we've done in the previous parts 
 		into the scene. <br><br>
 		When these rays hit a point on a primitive, we need to determine how much light that point adds to our ray, which involves considering all light that could be hitting this 
@@ -253,7 +253,7 @@
 		
 		<br><br>
 
-		It is important to note that the results seen in the images above are highly dependent on the paramters we set for our system. Some important parameters are number of camera rays per pixel,
+		It is important to note that the results seen in the images above are highly dependent on the parameters we set for our system. Some important parameters are number of camera rays per pixel,
 		max ray depth, and the number of samples per area light. We can see that the amount of noise, even in light sampling, varies when we change the number of rays to sample each 
 		area light with. The results below show 1, 4, 16, and 64 samples per area light with 1 sample per pixel:
 		<br><br>
@@ -325,7 +325,7 @@
 			<figcaption>Direct Illumination Only</figcaption>
 		</figure>
 		
-		We can see that when we isolate the direct illumination, it looks identical to the previous part. The main characteristic of this illumination type is the harsh shadows and and the 
+		We can see that when we isolate the direct illumination, it looks identical to the previous part. The main characteristic of this illumination type is the harsh shadows and the 
 		lack of influence that objects have on each other in the scene (such as how the red and blue walls do not reflect any light onto the spheres).
 
 		<br><br>
@@ -432,7 +432,7 @@
 		<br><br>
 
 		While global illumination creates a realistic look, it can also take a long time to render. One way to reduce the computational load and optimize our estimation of light in our samples 
-		is to use "Russian Roulette" rendering. In this method, we're able to set both a max depth as well as a probablity of termination, which can prematurely end our indirect lighting 
+		is to use "Russian Roulette" rendering. In this method, we're able to set both a max depth as well as a probability of termination, which can prematurely end our indirect lighting 
 		recursion. The results of this technique can be seen below:
 
 		<br><br>
@@ -523,7 +523,7 @@
 		\[I = 1.96 \cdot \frac{\sigma}{\sqrt{n}}\]
 
 
-		We can use this formula (which is derived from a 95% confidence interval) to track a pixels convergence as increasing variance results in an increase in \(I\). If 
+		We can use this formula (which is derived from a 95% confidence interval) to track a pixel's convergence as increasing variance results in an increase in \(I\). If 
 		\(I \le maxTolerance \cdot \mu \), then we say that the pixel has converged and doesn't need to be sampled anymore. 
 
 		<br><br>
@@ -563,8 +563,8 @@
 			  </table>
 		</div>
 
-		<h2>(Optional) Part 6: Extra Credit Opportunities</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<!-- <h2>(Optional) Part 6: Extra Credit Opportunities</h2>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. -->
 		
 		
 		</div>
