@@ -50,7 +50,16 @@
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		This assignment serves as a comprehensive introduction to ray tracing, touching on ray generation & intersection, optimization techniques, direct & indirect illumination with diffuse
+		BSDFs for global illumination, and adaptive sampling. It begins with the challenge of casting a ray into the scene from the camera, and tracking where that ray hits. From there, a 
+		Bounding Volume Hierarchy is used to vastly improve render times and computational efficiency. After this, adding both direct and indirect illumination types allows for the creation of 
+		highly realistic renders with global illumination that emulates how real light bounces. Finally, adaptive sampling is used to reduce sampling on pixels that have already been deemed 
+		as 'converged' to a certain color.
+		<br><br> 
+		
+		The most fascinating aspect of this project was the initial cast of the camera rays, which inolved taking coordinates from the image space, casting a ray in the camera space, and 
+		transforming this ray into the world space. Learning how to take a coordinate on an image plane and translate it into a ray that bounces and lives in the scene gives me a much stronger 
+		intuition about computer graphics as a whole. 
 
 		<h2>Part 1: Ray Generation and Scene Intersection</h2>
 		In Part 1, I implemented ray generation and ray-triangle/ray-circle intersection, which allows the most basic ray tracing. I began this process by generating rays that convert coordinates 
@@ -282,17 +291,14 @@
 
 
 		<h2>Part 4: Global Illumination</h2>
-		While the direct illumination above provided a baseline level of light for objects in the scene, in order to achieve maximum visual richness we need to add global illumination through
-		adding indirect light. Global 
-		illumination provides a more realistic look to the scene by emulating light's ability to hit multiple objects before reaching the camera. 
-		<br><br>To add this to the current system, I implemented 
-		a simple function that recursively adds the light from previous bounces to the final radiance of our camera ray and thus pixel. Once the initial camera ray hits a primitive at point
-		\(p\), we add on 
-		the 'one bounce' direct radiance that we calculated in the previous part. This initial ray starts at depth = 0, and as long as we haven't hit our maximum depth, a new ray is created at
-		\(p\) pointing in a random hemispherical direction. This new ray calls this same function (doing all of the same things of the previous ray), and adds it's direct radiance to the original 
-		camera ray in addition to all the rays that follow from this recursion. 
+		While the direct illumination shown above provides a baseline level of lighting for objects in the scene, achieving visual richness requires incorporating global illumination, 
+		which accounts for indirect lighting. Global illumination creates a more realistic and immersive image by simulating how light bounces off multiple surfaces before reaching the camera.
+		<br><br>To implement this, I wrote a recursive function that accumulates radiance from both direct and indirect bounces. When a camera ray first hits a surface at point
+		\(p\), we add the direct radiance calculated in the previous part. This initial ray starts at depth = 0, and as long as we haven't hit our maximum depth, a new ray is created at
+		\(p\) pointing in a random hemispherical direction. This ray recursively calls the same function, contributing its own radiance (direct and any further indirect bounces) back to the 
+		original ray. 
 		<br><br>
-		The results of this global illumination (which adds both direct and indirect) can be seen below:
+		The result of this global illumination, which adds both direct and indirect lighting, are shown below:
 
 		<br><br>
 		<div style="display: flex; flex-direction: column; align-items: center;">
@@ -312,8 +318,8 @@
 
 		<br><br>
 
-		One way to explore the effect of indirect illumination is to isolate it from direct illumination. In this first render, only the direct illumination contributes to the radiance of a 
-		pixel.
+		One way to better understand the role of indirect illumination is to isolate it from direct lighting. In the render below, only direct illumination contributes to the radiance of 
+		each pixel, meaning only rays that bounce off a primitive and go right into a light. 
 		
 		<figure>
 			<img src="p4_3_1.png" alt="Cornell Boxes with Bunnies" style="width:400px"/>
@@ -321,11 +327,11 @@
 		</figure>
 		
 		We can see that when we isolate the direct illumination, it looks identical to the previous part. The main characteristic of this illumination type is the harsh shadows and and the 
-		lack of influence that objects have on each other in the scene (such as how the red wall does not appear on the bunny).
+		lack of influence that objects have on each other in the scene (such as how the red and blue walls do not reflect any light onto the spheres).
 
 		<br><br>
 
-		Lets now isolate only the indirect illumination:
+		Lets now isolate the indirect illumination:
 
 		<figure>
 			<img src="p4_3_2.png" alt="Cornell Boxes with Bunnies" style="width:400px"/>
@@ -334,11 +340,12 @@
 
 		<br><br>
 
-		The indirect illumination alone effectively adds ambient lighting to the objects in the scene, since light is now able to reach objects that were previously in darker regions.
+		The indirect illumination alone effectively adds ambient lighting to the objects in the scene, since light is now able to reach objects that were previously in darker regions. Compared 
+		to the direct lighting, this render is more uniformly lit as a result of the indirect light bounces.
 
 		<br><br>
 
-		Now lets visualize only the light from the very last ray sent out by setting 'isAccumBounces = false' and changing the maximum number of bounces per ray:  
+		Now, lets visualize only the light from the very last ray sent out by setting 'isAccumBounces = false' and adjusting the maximum number of bounces per ray:  
 
 		<br><br>
 
@@ -374,15 +381,16 @@
 		</div>
 		<br><br>
 
-		Extracting the light from the last ray highlights how indirect lighting adds to the visual richness of a render. In the images that show 2 and 3 max bounces, 
-		the dark regions in the render with 1 max bounce are suddenly brighter. This is because the additional bounces (that on the 1st bounce would have gone straight into the floor) are now
-		bouncing back into the light. This provides an extremeley realistic visual as we add the radiance from these extra bounces to the final output color of these
-		 shadowed areas, which makes them significantly less harsh. Rasterization isn't able to emulate global illumination in this way, as it isn't able to trace the path of the light 
-		 throughout the scene or add ambient lighting that adapts to the scene.
+		Extracting the light contribution from the final bounce helps illustrate how indirect illumination enhances the visual richness of a render. In the images with a 
+		max depth of 2 or 3 bounces, areas that remained dark with only 1 bounce become noticeably brighter. This is because the additional bounces (that on the 1st bounce would have gone 
+		into the floor rather than a light source) are now
+		bouncing back into the light. These additional bounces simulate how real light would reflect throughout the scene, as we add the radiance from these extra bounces together to create 
+		softer shadows and smoother illumination. Rasterization can't replicate global illumination in this way, as it's unable to trace light paths 
+		 throughout the scene or add ambient lighting that adapts to the scene geometry.
 
 		<br><br>
 
-		We can now go through each render and use the same number of bounces while accumulating the direct and indirect light: 
+		With this in mind, we can examine each render using same number of bounces, this time accumulating both the direct and indirect light: 
 		
 		<br><br>
 
@@ -463,8 +471,8 @@
 
 		<br><br>
 
-		One important parameter for global illumination is the number of samples that we take per pixel, as the reduces the noise associated with sending rays out in random directions. As 
-		we change this paramter, we can see how the result becomes less noisy:
+		One important parameter for global illumination is the number of samples that we take per pixel, as the reduces the noise associated with sending rays out in random directions to 
+		approximate the indirect light. As we change this parameter, the renders become less noisy:
 		
 		<br><br>
 		
@@ -504,21 +512,62 @@
 		</div>
 
 		<h2>Part 5: Adaptive Sampling</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		The previous set of renders demonstrated how the main method for reducing the noise associated with Monte Carlo path tracing and global illumination is to increase the number of 
+		samples per pixel. Increasing this parameter greatly increases the computational load, and wastes samples on pixels that have already converged to a certain color. To account for this,
+		we can use adaptive sampling to only increase the number of samples per pixel for pixels that don't converge quickly.
+
+		<br><br>
+
+		To implement this, we keep track of the mean μ and standard deviation σ of the samples we've traced for a given pixel. According to the assignment specification, we establish a variable
+		\(I\) that represents the convergence of a given pixel:
+
+		\[I = 1.96 \cdot \frac{\sigma}{\sqrt{n}}\]
+
+
+		We can use this formula (which is derived from a 95% confidence interval) to track a pixels convergence as increasing variance results in an increase in \(I\). If 
+		\(I \le maxTolerance \cdot \mu \), then we say that the pixel has converged and doesn't need to be sampled anymore. 
+
+		<br><br>
+
+		We can map where the sample \(n\) where we've deemed that the pixel has 'converged' by dividing it by the maximum number of samples. This gives us a 'rate' map for each render, which 
+		can be seen in the examples below:
+		
+		<br><br>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="p5_1_2.png" width="400px"/>
+				  <figcaption>CBbunny.dae</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p5_1_1.png" width="400px"/>
+				  <figcaption>CBbunny.dae Rate map</figcaption>
+				</td>
+			  </tr>
+			  </table>
+		</div>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="p5_2_1.png" width="400px"/>
+				  <figcaption>CBbunny.dae</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="p5_2_2.png" width="400px"/>
+				  <figcaption>CBbunny.dae Rate map</figcaption>
+				</td>
+			  </tr>
+			  </table>
+		</div>
 
 		<h2>(Optional) Part 6: Extra Credit Opportunities</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 		
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
+		
 		</div>
 	</body>
 </html>
